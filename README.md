@@ -1,0 +1,2 @@
+# QanhNo1Script
+LAG SERVER WORKING
