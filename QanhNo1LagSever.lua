@@ -1,8 +1,8 @@
 --[[
     ╔═══════════════════════════════════════════════════════════════╗
-    ║     🐉 DRAGON PINGX PRO | QANH NO 1 | READY TO USE          ║
+    ║     🐉 DRAGON PINGX PRO | QANH NO 1 | v4.0                  ║
+    ║     🔧 TÍNH NĂNG MỚI: ẨN MENU + 3 NGÓN BẬT                 ║
     ║     📡 WEBSITE: https://roszmodxqanhno1.onrender.com        ║
-    ║     🔧 EXECUTOR: Delta X / Arceus X / Solara / CodeX        ║
     ╚═══════════════════════════════════════════════════════════════╝
 --]]
 
@@ -12,12 +12,14 @@
     local RunService = game:GetService("RunService")
     local HttpService = game:GetService("HttpService")
     local UserInputService = game:GetService("UserInputService")
+    local TweenService = game:GetService("TweenService")
     local player = Players.LocalPlayer
     
     -- ========== CONFIG ==========
     local API_URL = "https://roszmodxqanhno1.onrender.com"
     local isVerified = false
     local currentKey = ""
+    local isMenuVisible = true
     
     -- ========== HÀM TIỆN ÍCH ==========
     local function notify(title, text, duration)
@@ -43,13 +45,11 @@
     local function verifyKey(key)
         if key == nil or key == "" then return false end
         
-        -- Admin keys (cứng)
         local adminKeys = {"QANHNO1CRACKER", "DRAGONLOCUT", "ADMIN2024", "VIPKEY"}
         for _, ak in pairs(adminKeys) do
             if key == ak then return true end
         end
         
-        -- Verify qua web
         local url = API_URL .. "/api/verify?key=" .. key .. "&hwid=" .. getHWID()
         local success, response = pcall(function()
             return game:HttpGet(url)
@@ -62,15 +62,14 @@
         return false
     end
     
-    -- ========== UI ==========
+    -- ========== TẠO UI ==========
     local screenGui = Instance.new("ScreenGui")
     screenGui.Name = "DragonPingX"
     screenGui.ResetOnSpawn = false
     
-    -- Tìm parent phù hợp
     local parentList = {game:GetService("CoreGui"), player:WaitForChild("PlayerGui")}
     for _, parent in pairs(parentList) do
-        local success, err = pcall(function()
+        local success = pcall(function()
             screenGui.Parent = parent
         end)
         if success and screenGui.Parent then break end
@@ -82,8 +81,8 @@
     
     -- Main Frame
     local main = Instance.new("Frame")
-    main.Size = UDim2.new(0, 420, 0, 520)
-    main.Position = UDim2.new(0.5, -210, 0.5, -260)
+    main.Size = UDim2.new(0, 420, 0, 540)
+    main.Position = UDim2.new(0.5, -210, 0.5, -270)
     main.BackgroundColor3 = Color3.fromRGB(15, 20, 35)
     main.BackgroundTransparency = 0.08
     main.BorderSizePixel = 2
@@ -98,7 +97,7 @@
     title.Parent = main
     
     local titleText = Instance.new("TextLabel")
-    titleText.Size = UDim2.new(1, -40, 1, 0)
+    titleText.Size = UDim2.new(1, -70, 1, 0)
     titleText.Position = UDim2.new(0, 5, 0, 0)
     titleText.BackgroundTransparency = 1
     titleText.Text = "🐉 DRAGON PINGX | QANH NO 1"
@@ -108,13 +107,25 @@
     titleText.TextXAlignment = Enum.TextXAlignment.Left
     titleText.Parent = title
     
-    -- Close Button
+    -- Nút ẩn menu (dấu ✖)
+    local hideBtn = Instance.new("TextButton")
+    hideBtn.Size = UDim2.new(0, 35, 1, 0)
+    hideBtn.Position = UDim2.new(1, -70, 0, 0)
+    hideBtn.BackgroundColor3 = Color3.fromRGB(255, 100, 100)
+    hideBtn.BackgroundTransparency = 0.3
+    hideBtn.Text = "✖"
+    hideBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    hideBtn.TextSize = 18
+    hideBtn.Font = Enum.Font.SourceSansBold
+    hideBtn.Parent = title
+    
+    -- Nút đóng (dấu X)
     local closeBtn = Instance.new("TextButton")
     closeBtn.Size = UDim2.new(0, 35, 1, 0)
     closeBtn.Position = UDim2.new(1, -35, 0, 0)
     closeBtn.BackgroundColor3 = Color3.fromRGB(255, 50, 100)
     closeBtn.BackgroundTransparency = 0.3
-    closeBtn.Text = "✕"
+    closeBtn.Text = "X"
     closeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
     closeBtn.TextSize = 18
     closeBtn.Font = Enum.Font.SourceSansBold
@@ -131,7 +142,7 @@
     status.Font = Enum.Font.GothamSemibold
     status.Parent = main
     
-    -- Key Input Label
+    -- Key Input
     local keyLabel = Instance.new("TextLabel")
     keyLabel.Size = UDim2.new(0.9, 0, 0, 20)
     keyLabel.Position = UDim2.new(0.05, 0, 0.2, 0)
@@ -142,7 +153,6 @@
     keyLabel.TextXAlignment = Enum.TextXAlignment.Left
     keyLabel.Parent = main
     
-    -- Key Input Box
     local keyBox = Instance.new("TextBox")
     keyBox.Size = UDim2.new(0.9, 0, 0, 40)
     keyBox.Position = UDim2.new(0.05, 0, 0.25, 0)
@@ -153,7 +163,7 @@
     keyBox.TextSize = 13
     keyBox.Parent = main
     
-    -- Verify Button
+    -- Buttons
     local verifyBtn = Instance.new("TextButton")
     verifyBtn.Size = UDim2.new(0.43, 0, 0, 40)
     verifyBtn.Position = UDim2.new(0.05, 0, 0.33, 0)
@@ -164,7 +174,6 @@
     verifyBtn.Font = Enum.Font.GothamBold
     verifyBtn.Parent = main
     
-    -- Get Key Button
     local getKeyBtn = Instance.new("TextButton")
     getKeyBtn.Size = UDim2.new(0.43, 0, 0, 40)
     getKeyBtn.Position = UDim2.new(0.52, 0, 0.33, 0)
@@ -183,7 +192,7 @@
     line.BackgroundTransparency = 0.6
     line.Parent = main
     
-    -- Lag Section Title
+    -- Lag Title
     local lagTitle = Instance.new("TextLabel")
     lagTitle.Size = UDim2.new(0.9, 0, 0, 25)
     lagTitle.Position = UDim2.new(0.05, 0, 0.45, 0)
@@ -316,12 +325,26 @@
     footer.Size = UDim2.new(1, 0, 0, 25)
     footer.Position = UDim2.new(0, 0, 1, -25)
     footer.BackgroundTransparency = 1
-    footer.Text = "⚡ DRAGON PINGX PREMIUM | QANH NO 1 EDITION ⚡"
-    footer.TextColor3 = Color3.fromRGB(100, 100, 150)
-    footer.TextSize = 9
+    footer.Text = "⚡ 3 NGÓN CHẠM MÀN HÌNH ĐỂ HIỆN MENU ⚡"
+    footer.TextColor3 = Color3.fromRGB(255, 200, 100)
+    footer.TextSize = 10
     footer.Parent = main
     
     -- ========== SỰ KIỆN ==========
+    -- Nút ẩn menu (✖)
+    hideBtn.MouseButton1Click:Connect(function()
+        isMenuVisible = false
+        local tween = TweenService:Create(main, TweenInfo.new(0.3, Enum.EasingStyle.Quad), {
+            Position = UDim2.new(0.5, -210, 2, 0)
+        })
+        tween:Play()
+        tween.Completed:Connect(function()
+            main.Visible = false
+        end)
+        notify("🔒 MENU", "Đã ẩn menu. Chạm 3 ngón vào màn hình để hiện lại.", 3)
+    end)
+    
+    -- Nút đóng (X)
     closeBtn.MouseButton1Click:Connect(function()
         screenGui:Destroy()
         notify("👋 DRAGON PINGX", "Đã đóng!", 2)
@@ -371,6 +394,38 @@
         end
     end)
     
+    -- ========== 3 NGÓN CHẠM HIỆN MENU ==========
+    local touchCount = 0
+    local lastTouchTime = 0
+    
+    UserInputService.TouchStarted:Connect(function(input, gameProcessed)
+        if gameProcessed then return end
+        
+        touchCount = touchCount + 1
+        lastTouchTime = tick()
+        
+        -- Reset touchCount sau 0.5 giây
+        task.delay(0.5, function()
+            if tick() - lastTouchTime >= 0.5 then
+                touchCount = 0
+            end
+        end)
+        
+        -- Nếu có 3 ngón chạm cùng lúc
+        if touchCount >= 3 then
+            touchCount = 0
+            if not isMenuVisible then
+                isMenuVisible = true
+                main.Visible = true
+                local tween = TweenService:Create(main, TweenInfo.new(0.3, Enum.EasingStyle.Quad), {
+                    Position = UDim2.new(0.5, -210, 0.5, -270)
+                })
+                tween:Play()
+                notify("🔓 MENU", "Đã hiện menu!", 2)
+            end
+        end
+    end)
+    
     -- ========== KÉO CỬA SỔ ==========
     local dragging = false
     local dragStart, startPos
@@ -397,7 +452,9 @@
     
     -- ========== KHỞI CHẠY ==========
     notify("🐉 DRAGON PINGX", "Đã tải thành công! Lấy key tại: " .. API_URL .. "/getkey", 5)
-    print("✅ DRAGON PINGX PRO - QANH NO 1 LOADED")
+    notify("📱", "Chạm 3 ngón vào màn hình để hiện menu nếu bị ẩn.", 4)
+    print("✅ DRAGON PINGX PRO - QANH NO 1 v4.0 LOADED")
     print("🔗 Website: " .. API_URL)
     print("🔑 Dùng key: QANHNO1CRACKER (admin key) để test")
+    print("📱 3 ngón chạm màn hình để hiện menu")
 end)()
